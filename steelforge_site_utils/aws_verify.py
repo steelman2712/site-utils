@@ -35,7 +35,6 @@ def verify_jwt(id_token):
 def authed(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        logging.debug(id_token)
         try:
             access_token = request.cookies.get('access_token')
             token_verified = verify_access_token(access_token)
