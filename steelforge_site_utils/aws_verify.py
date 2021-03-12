@@ -38,7 +38,7 @@ def authed(func):
         try:
             access_token = request.cookies.get('access_token')
             token_verified = verify_access_token(access_token)
-            if verify_access_token(id_token):
+            if verify_access_token(access_token):
                 return func(*args, **kwargs)
             else:
                 return redirect(url_for("login"))
