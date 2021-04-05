@@ -1,0 +1,3 @@
+cognitojwt
+boto3
+flask
