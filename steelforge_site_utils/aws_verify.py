@@ -2,7 +2,7 @@ from functools import wraps
 import cognitojwt
 import os
 import time
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, session
 import boto3
 import logging 
 
@@ -10,7 +10,13 @@ REGION = os.environ.get("AWS_REGION")
 USERPOOL_ID = os.environ.get("USERPOOL_ID")
 CLIENT_ID = os.environ.get("CLIENT_ID")
 
+LOGIN_ENDPOINT = os.environ.get("LOGIN_ENDPOINT","/login")
+
 cognito_client = boto3.client('cognito-idp')
+SECRET_KEY = os.environ.get("FLASK_SECRET_KEY")
+
+app = Flask(__name__)
+app.secret_key = SECRET_KEY
 
 def verify_jwt(id_token):
     verified_claims= cognitojwt.decode(
@@ -36,15 +42,16 @@ def authed(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
+            session["redirect_url"] = request.url
             access_token = request.cookies.get('access_token')
             token_verified = verify_access_token(access_token)
             if verify_access_token(access_token):
                 return func(*args, **kwargs)
             else:
-                return redirect(url_for("login"))
+                return redirect(LOGIN_ENDPOINT)
         except Exception as e:
             logging.debug(e)
-            return redirect(url_for("login"))
+            return redirect(LOGIN_ENDPOINT)
     return wrapper
 
 
