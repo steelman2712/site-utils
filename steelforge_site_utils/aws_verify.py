@@ -43,6 +43,8 @@ def authed(func):
     def wrapper(*args, **kwargs):
         try:
             session["redirect_url"] = request.url
+            print("Request url: ",request.url)
+            print("Session: ",session["redirect_url"])
             access_token = request.cookies.get('access_token')
             token_verified = verify_access_token(access_token)
             if verify_access_token(access_token):
