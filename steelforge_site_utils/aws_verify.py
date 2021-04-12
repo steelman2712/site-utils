@@ -2,7 +2,7 @@ from functools import wraps
 import cognitojwt
 import os
 import time
-from flask import request, redirect, url_for, session
+from flask import Flask, request, redirect, url_for, session
 import boto3
 import logging 
 
